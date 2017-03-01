@@ -2,15 +2,15 @@ set echo on
 connect system/amakal
 
 --Create PHP Application User
-drop phpuser cascade;
-ceate phpser identified by welcome;
+drop user phpuser cascade;
+create user phpuser identified by welcome;
 grant connect, resource to phpuser;
 alter user phpuser default tablespace users temporary tablespace temp account unlock;
 
 
 --Create user owner security info about the application
-drop php_sec_admin cascade;
-create php_sec_admin identified by welcome;
+drop user php_sec_admin cascade;
+create user php_sec_admin identified by welcome;
 alter user php_sec_admin default tablespace system temporary tablespace temp account unlock;
 grant create procedure, create session, create table, resource, select any dictionary to php_sec_admin;
 
@@ -41,8 +41,8 @@ create table php_authentication
   (app_username varchar2(20) primary key,
   app_password varchar2(20) not null);
   
- inser into php_authentication values('mirana', 'tiger');
- inser into php_authentication values('luna', 'leopard');
+ insert into php_authentication values('mirana', 'tiger');
+ insert into php_authentication values('luna', 'leopard');
  commit;
  
- grant selection on php_authentication to phpuser;
+ grant select on php_authentication to phpuser;
