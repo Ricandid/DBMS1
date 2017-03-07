@@ -1,48 +1,55 @@
 set echo on
-connect system/amakal
+connect system/yopanda1617
 
---Create PHP Application User
-drop user phpuser cascade;
-create user phpuser identified by welcome;
-grant connect, resource to phpuser;
-alter user phpuser default tablespace users temporary tablespace temp account unlock;
+drop user techvoc_user cascade;
+create user techvoc_user identified by pandahead;
+grant connect, resource to techvoc_user;
+alter user techvoc_user default tablespace users temporary tablespace temp account unlock;
 
+drop user techvoc_teacher cascade;
+create user techvoc_teacher identified by pandahead;
+grant connect, resource to techvoc_teacher;
+alter user techvoc_teacher default tablespace users temporary tablespace temp account unlock;
 
---Create user owner security info about the application
-drop user php_sec_admin cascade;
-create user php_sec_admin identified by welcome;
-alter user php_sec_admin default tablespace system temporary tablespace temp account unlock;
-grant create procedure, create session, create table, resource, select any dictionary to php_sec_admin;
+drop user techvoc_admin cascade;
+create user techvoc_admin identified by pandahead;
+alter user techvoc_admin default tablespace system temporary tablespace temp account unlock;
+grant create procedure, create session, create table, resource, select any dictionary to techvoc_admin; 
 
-connect phpuser/welcome;
+connect techvoc_teacher/pandahead;
 
---"Parts" table for the application demo
-create table parts
-  (id number primary key,
-  category varchar2(20),
-  name varchar2(20));
+create table teacher
+  (emp_id number(38) primary key,
+  first_name varchar2(20),
+  last_name varchar2(20),
+  m_initial varchar2(20),
+  bdate date,
+  gender char(6),
+  email varchar2(50),
+  password varchar2(50));
  
-insert into parts values(1, 'electrical', 'lamp');
-insert into parts values(2, 'electrical', 'wire');
-insert into parts values(3, 'electrical', 'switch');
-insert into parts values(4, 'plumbing', 'pipe');
-insert into parts values(5, 'plumbing', 'sink');
-insert into parts values(6, 'plumbing', 'toilet');
-commit;
 
-connect php_sec_admin/welcome;
+connect techvoc_user/pandahead;
 
---Authentication table with the webuser usernames and password
---A real application would never store plain-text passwords
---but this code is a demo for user of client identifiers and
---not about authentication
+create table student
+  (usn number(38) primary key,
+  first_name varchar2(20),
+  last_name varchar2(20),
+  m_initial varchar2(20),
+  bdate date,
+  gender char(6),
+  email varchar2(50),
+  password varchar2(30));
 
-create table php_authentication
-  (app_username varchar2(20) primary key,
-  app_password varchar2(20) not null);
-  
- insert into php_authentication values('mirana', 'tiger');
- insert into php_authentication values('luna', 'leopard');
- commit;
- 
- grant select on php_authentication to phpuser;
+connect techvoc_teacher/pandahead;
+
+create table gradingsheet
+  (usn number(38) primary key,
+  remarks varchar2(50),
+  subjects varchar2(50),
+  grades varchar2(50));
+
+grant select on gradingsheet to techvoc_user;
+grant select on teacher to techvoc_user;
+connect techvoc_user/pandahead;
+grant select on student to techvoc_teacher;
